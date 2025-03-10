@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OPPA Wall Art - Cart</title>
+</head>
+<body>
+  <h1>Your Cart</h1>
+  <div id="cart-items"></div>
+  <button onclick="checkout()">Proceed to Checkout</button>
+  
+  <script>
+    function renderCart() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartDiv = document.getElementById('cart-items');
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price;
+        const div = document.createElement('div');
+        div.innerHTML = item.name + ' - R' + item.price;
+        cartDiv.appendChild(div);
+      });
+      const totalDiv = document.createElement('div');
+      totalDiv.innerHTML = '<strong>Total: R' + total + '</strong>';
+      cartDiv.appendChild(totalDiv);
+    }
+    
+    function checkout() {
+      window.location.href = 'checkout.html';
+    }
+    
+    renderCart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+.design-matrix-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(30, 10mm);
+    grid-template-rows: repeat(12, 10mm);
+    border: 1px solid #ccc;
+  }
+  
+  .grid-cell {
+    width: 10mm;
+    height: 10mm;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+  
+  .grid-cell:hover {
+    border-color: #aaa;
+  }
+  

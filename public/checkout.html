@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OPPA Wall Art Checkout</title>
+    <!-- Include Yoco SDK -->
+    <script src="https://js.yoco.com/sdk/v1/yoco-sdk-web.js"></script>
+</head>
+<body>
+    <h1>Checkout - OPPA Wall Art</h1>
+    <div id="order-summary"></div>
+    
+    <form id="payment-form">
+        <label for="name">Name on Card:</label>
+        <input type="text" id="name" name="name" required>
+        <!-- Container for Yoco Card Element -->
+        <div id="yoco-card"></div>
+        <button type="submit">Pay</button>
+    </form>
+
+    <div id="payment-message"></div>
+
+    <script>
+      // Retrieve cart details and calculate total
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      let total = cart.reduce((acc, item) => acc + item.price, 0);
+
+      // Display order summary
+      const orderSummaryDiv = document.getElementById('order-summary');
+      orderSummaryDiv.innerHTML = '<h2>Order Summary</h2>';
+      cart.forEach(item => {
+          orderSummaryDiv.innerHTML += '<p>' + item.name + ' - R' + item.price + '</p>';
+      });
+      orderSummaryDiv.innerHTML += '<p><strong>Total: R' + total + '</strong></p>';
+
+      // Convert total to cents (Yoco uses cents for ZAR; adjust if needed)
+      const amountInCents = total * 100;
+
+      // Initialize Yoco SDK with your public key
+      const yoco = YocoSDK('YOUR_YOCO_PUBLIC_KEY');
+
+      // Create and mount the card component
+      const card = yoco.card({
+        // You can add custom styling and options here
+      });
+      card.mount('#yoco-card');
+
+      // Handle the payment form submission
+      const form = document.getElementById('payment-form');
+      form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const name = document.getElementById('name').value;
+          const result = await card.createToken({ name });
+          
+          if (result.error) {
+              document.getElementById('payment-message').innerText = result.error;
+          } else {
+              // Send the token and amount to your backend for processing
+              fetch('/process-payment', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                      token: result.id,
+                      amountInCents: amountInCents
+                  })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if(data.success) {
+                      // Clear cart and redirect on success
+                      localStorage.removeItem('cart');
+                      window.location.href = 'success.html';
+                  } else {
+                      document.getElementById('payment-message').innerText = data.message;
+                  }
+              })
+              .catch(err => {
+                  document.getElementById('payment-message').innerText = 'Payment processing error.';
+              });
+          }
+      });
+    </script>
+</body>
+</html>

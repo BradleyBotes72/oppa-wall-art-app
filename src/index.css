@@ -1,0 +1,73 @@
+/* src/index.css */
+
+/* Global Reset & Base Styles */
+html {
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+  font-family: "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding-top: 141px; /* space for fixed header */
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #373a3c;
+  background-color: #fff;
+}
+
+/* Navbar & Footer Styles */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333; /* Dark Grey */
+  color: orange;
+  padding: 1rem;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  color: orange;
+  margin: 0 0.5rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #ffcc80;
+}
+
+footer {
+  background-color: #333;
+  color: orange;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+/* Home Page Image Gallery */
+.image-gallery {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.image-gallery img {
+  width: 800px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
