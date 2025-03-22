@@ -3,8 +3,11 @@ import { useCart } from "../context/CartContext";
 import "./CheckoutButton.css";
 
 const CheckoutButton = () => {
-  const { cartTotal } = useCart();
+  const { cart } = useCart();
   const [yoco, setYoco] = useState(null);
+
+  const BLOCK_PRICE = 3.2; // Ensure correct block price
+  const cartTotal = cart.reduce((total, item) => total + item.quantity * BLOCK_PRICE, 0); // Calculate total dynamically
 
   useEffect(() => {
     console.log("Cart Total:", cartTotal);
