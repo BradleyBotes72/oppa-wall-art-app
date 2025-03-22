@@ -1,32 +1,57 @@
 .design-matrix-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  height: 100vh; /* Full screen height */
+  overflow: hidden; /* Prevents body scrolling */
+}
+
+.controls {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Scrollable grid container */
+.grid-wrapper {
+  width: 100%;
+  max-width: 95vw; /* Prevents overflow */
+  max-height: 80vh; /* Prevents the grid from taking over the whole screen */
+  overflow: auto; /* Enables scrolling */
+  border: 1px solid #ccc;
+  scroll-behavior: smooth; /* Smooth scrolling */
+}
+
+/* Ensures the grid itself remains large */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(30, 10mm);
+  grid-template-rows: repeat(12, 10mm);
+  border: 1px solid #ccc;
+  width: max-content; /* Ensures grid doesn't shrink */
+  height: max-content;
+}
+
+/* Ensures proper spacing and visibility */
+.grid-cell {
+  width: 10mm;
+  height: 10mm;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.grid-cell:hover {
+  border-color: #aaa;
+}
+
+/* Enable touch scrolling on mobile */
+@media (max-width: 768px) {
+  .grid-wrapper {
+    max-width: 100vw;
+    max-height: 75vh;
+    touch-action: pan-x pan-y;
   }
-  
-  .controls {
-    margin-bottom: 20px;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-  
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(30, 10mm);
-    grid-template-rows: repeat(12, 10mm);
-    border: 1px solid #ccc;
-  }
-  
-  .grid-cell {
-    width: 10mm;
-    height: 10mm;
-    border: 1px solid #ddd;
-    cursor: pointer;
-  }
-  
-  .grid-cell:hover {
-    border-color: #aaa;
-  }
-  
+}
