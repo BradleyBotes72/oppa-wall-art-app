@@ -52,29 +52,17 @@ export default function CustomDesign() {
     });
   }, [customWidth, customHeight]);
 
-  // Calculate final price:
-  // Base price = R720 (minimum for 1200 x 450)
-  // Extra columns/rows (beyond standard 30 x 11) cost R50 each;
-  // Extra distinct colours (beyond the first) cost R80 each;
-  // Frame adds R100.
+  // Calculate final price based on R3.20 per block
   useEffect(() => {
     const newCols = Math.round(customWidth / physicalBlockSize);
     const newRows = Math.round(customHeight / physicalBlockSize);
-    const extraCols = newCols > defaultCols ? newCols - defaultCols : 0;
-    const extraRows = newRows > defaultRows ? newRows - defaultRows : 0;
-    const sizeCost = (extraCols + extraRows) * 50;
+    const totalBlocks = newCols * newRows;
+    const blockCost = totalBlocks * 3.2; // R3.20 per block
 
-    const coloursUsed = new Set(
-      grid.flat().filter((color) => color.toLowerCase() !== "#ffffff")
-    );
-    const distinctColours = coloursUsed.size;
-    const extraColourCost = distinctColours > 1 ? (distinctColours - 1) * 80 : 0;
-
+    // Frame cost
     const frameCost = frameSelected ? 100 : 0;
 
-    const basePrice = 720; // Minimum price
-
-    setFinalPrice(basePrice + sizeCost + extraColourCost + frameCost);
+    setFinalPrice(blockCost + frameCost);
   }, [grid, customWidth, customHeight, frameSelected]);
 
   const updateCellColor = (row, col) => {
@@ -232,6 +220,8 @@ export default function CustomDesign() {
               gridTemplateRows: `repeat(${grid.length}, ${displayBlockSize}mm)`,
               margin: "0 auto",
               border: "1px solid #000",
+              maxHeight: "80vh", // Limit grid height
+              overflowY: "scroll", // Allow vertical scrolling
             }}
           >
             {grid.map((row, rowIndex) =>
@@ -261,7 +251,7 @@ export default function CustomDesign() {
 
       {/* Final Price Display */}
       <div style={{ textAlign: "center", marginTop: "1rem", fontSize: "1.25rem" }}>
-        Final Price: R{finalPrice}
+        Final Price: R{finalPrice.toFixed(2)}
       </div>
     </div>
   );
