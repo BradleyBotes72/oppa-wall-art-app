@@ -274,6 +274,7 @@ export default function CustomDesign() {
           marginBottom: "1rem",
           overflow: "hidden",
           cursor: "grab",
+          maxWidth: "max-content",  // Ensure grid doesn’t shrink
         }}
         onMouseDown={handleMouseDownScroll}
         onMouseMove={handleMouseMoveScroll}
@@ -310,24 +311,27 @@ export default function CustomDesign() {
             )}
           </div>
         )}
+      </div>
+
+      {/* Final Price */}
+      <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <h3>Final Price: R{finalPrice.toFixed(2)}</h3>
+      </div>
+
+      {/* Add to Cart Button */}
+      <div style={{ textAlign: "center" }}>
         <button
           onClick={handleAddDesignToCart}
           style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "orange",
+            padding: "0.5rem 2rem",
+            backgroundColor: "green",
             color: "#fff",
             border: "none",
             borderRadius: "4px",
           }}
         >
-          Add Design to Cart
+          Add to Cart
         </button>
-      </div>
-
-      {/* Final Price Display */}
-      <div style={{ textAlign: "center", marginTop: "1rem", fontSize: "1.25rem" }}>
-        Final Price: R{finalPrice.toFixed(2)}
       </div>
     </div>
   );
