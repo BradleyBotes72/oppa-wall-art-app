@@ -1,5 +1,4 @@
-// src/pages/CustomDesign.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 
 // Physical dimensions (in mm) for the standard design
@@ -35,6 +34,12 @@ export default function CustomDesign() {
 
   // Final price state
   const [finalPrice, setFinalPrice] = useState(0);
+
+  // Grid scrolling state
+  const gridContainerRef = useRef(null);
+  const isMouseDown = useRef(false);
+  const lastClientX = useRef(0);
+  const lastClientY = useRef(0);
 
   // Update grid when custom dimensions change
   useEffect(() => {
@@ -132,6 +137,30 @@ export default function CustomDesign() {
     alert(`Design saved and added to cart! Final Price: R${finalPrice}`);
   };
 
+  // Handle mouse drag scrolling
+  const handleMouseDownScroll = (e) => {
+    isMouseDown.current = true;
+    lastClientX.current = e.clientX;
+    lastClientY.current = e.clientY;
+  };
+
+  const handleMouseMoveScroll = (e) => {
+    if (!isMouseDown.current || !gridContainerRef.current) return;
+
+    const deltaX = e.clientX - lastClientX.current;
+    const deltaY = e.clientY - lastClientY.current;
+
+    gridContainerRef.current.scrollLeft -= deltaX;
+    gridContainerRef.current.scrollTop -= deltaY;
+
+    lastClientX.current = e.clientX;
+    lastClientY.current = e.clientY;
+  };
+
+  const handleMouseUpScroll = () => {
+    isMouseDown.current = false;
+  };
+
   return (
     <div style={{ padding: "1rem" }}>
       <h2 style={{ textAlign: "center", fontSize: "2rem", marginBottom: "1rem" }}>
@@ -142,18 +171,18 @@ export default function CustomDesign() {
       <div style={{ maxWidth: "400px", margin: "0 auto 1rem", textAlign: "center" }}>
         <label>
           Width (mm):
-          <input 
-            type="number" 
-            value={customWidth} 
+          <input
+            type="number"
+            value={customWidth}
             onChange={(e) => setCustomWidth(Number(e.target.value))}
             style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
           />
         </label>
         <label>
           Height (mm):
-          <input 
-            type="number" 
-            value={customHeight} 
+          <input
+            type="number"
+            value={customHeight}
             onChange={(e) => setCustomHeight(Number(e.target.value))}
             style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
           />
@@ -166,9 +195,9 @@ export default function CustomDesign() {
       {/* Frame Options */}
       <div style={{ maxWidth: "400px", margin: "0 auto 1rem", textAlign: "center" }}>
         <label>
-          <input 
-            type="checkbox" 
-            checked={frameSelected} 
+          <input
+            type="checkbox"
+            checked={frameSelected}
             onChange={(e) => setFrameSelected(e.target.checked)}
           />{" "}
           Add Frame (Extra R100)
@@ -177,10 +206,10 @@ export default function CustomDesign() {
           <div style={{ marginTop: "0.5rem" }}>
             <label>
               Frame Color:{" "}
-              <input 
-                type="color" 
-                value={frameColor} 
-                onChange={(e) => setFrameColor(e.target.value)} 
+              <input
+                type="color"
+                value={frameColor}
+                onChange={(e) => setFrameColor(e.target.value)}
               />
             </label>
           </div>
@@ -196,20 +225,60 @@ export default function CustomDesign() {
           style={{ marginBottom: "1rem" }}
         />
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button onClick={randomizeGrid} style={{ padding: "0.5rem 1rem", backgroundColor: "orange", color: "#fff", border: "none", borderRadius: "4px" }}>
+          <button
+            onClick={randomizeGrid}
+            style={{
+              padding: "0.5rem 1rem",
+              backgroundColor: "orange",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
             Random Colors
           </button>
-          <button onClick={clearGrid} style={{ padding: "0.5rem 1rem", backgroundColor: "orange", color: "#fff", border: "none", borderRadius: "4px" }}>
+          <button
+            onClick={clearGrid}
+            style={{
+              padding: "0.5rem 1rem",
+              backgroundColor: "orange",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
             Clear Grid
           </button>
-          <button onClick={exportToPNG} style={{ padding: "0.5rem 1rem", backgroundColor: "orange", color: "#fff", border: "none", borderRadius: "4px" }}>
+          <button
+            onClick={exportToPNG}
+            style={{
+              padding: "0.5rem 1rem",
+              backgroundColor: "orange",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
             Export as PNG
           </button>
         </div>
       </div>
 
       {/* Design Matrix */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div
+        ref={gridContainerRef}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginBottom: "1rem",
+          overflow: "hidden",
+          cursor: "grab",
+        }}
+        onMouseDown={handleMouseDownScroll}
+        onMouseMove={handleMouseMoveScroll}
+        onMouseUp={handleMouseUpScroll}
+      >
         {grid && grid.length > 0 && grid[0] && (
           <div
             id="matrix-grid"
@@ -221,7 +290,7 @@ export default function CustomDesign() {
               margin: "0 auto",
               border: "1px solid #000",
               maxHeight: "80vh", // Limit grid height
-              overflowY: "scroll", // Allow vertical scrolling
+              overflowY: "hidden", // Disable native scrolling
             }}
           >
             {grid.map((row, rowIndex) =>
@@ -243,7 +312,14 @@ export default function CustomDesign() {
         )}
         <button
           onClick={handleAddDesignToCart}
-          style={{ marginTop: "1rem", padding: "0.5rem 1rem", backgroundColor: "orange", color: "#fff", border: "none", borderRadius: "4px" }}
+          style={{
+            marginTop: "1rem",
+            padding: "0.5rem 1rem",
+            backgroundColor: "orange",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+          }}
         >
           Add Design to Cart
         </button>
